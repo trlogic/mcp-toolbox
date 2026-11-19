@@ -77,3 +77,4 @@ apikey: "my-api-key"
 | type      |  string  |     true     | Must be "elasticsearch".                   |
 | addresses | []string |     true     | List of Elasticsearch hosts to connect to. |
 | apikey    |  string  |     true     | The API key to use for authentication.     |
+| insecureSkipVerify | bool | false | Skip TLS certificate verification (e.g. self-signed certs). Development only. Default: `false`. |

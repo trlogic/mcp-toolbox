@@ -17,6 +17,7 @@ package elasticsearch
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -50,12 +51,13 @@ func newConfig(ctx context.Context, name string, decoder *yaml.Decoder) (sources
 }
 
 type Config struct {
-	Name      string   `yaml:"name" validate:"required"`
-	Type      string   `yaml:"type" validate:"required"`
-	Addresses []string `yaml:"addresses" validate:"required"`
-	Username  string   `yaml:"username"`
-	Password  string   `yaml:"password"`
-	APIKey    string   `yaml:"apikey"`
+	Name               string   `yaml:"name" validate:"required"`
+	Type               string   `yaml:"type" validate:"required"`
+	Addresses          []string `yaml:"addresses" validate:"required"`
+	Username           string   `yaml:"username"`
+	Password           string   `yaml:"password"`
+	APIKey             string   `yaml:"apikey"`
+	InsecureSkipVerify bool     `yaml:"insecureSkipVerify"`
 }
 
 func (c Config) SourceConfigType() string {
@@ -99,6 +101,12 @@ func (c Config) Initialize(ctx context.Context, tracer trace.Tracer) (sources.So
 		elasticsearch.WithAddresses(c.Addresses...),
 		elasticsearch.WithInstrumentation(elasticsearch.NewOpenTelemetryInstrumentation(tracerProvider, false)),
 		elasticsearch.WithTransportOptions(elastictransport.WithHeader(http.Header{"User-Agent": []string{ua + " go-elasticsearch/" + elasticsearch.Version}})),
+	}
+
+	if c.InsecureSkipVerify {
+		tr := http.DefaultTransport.(*http.Transport).Clone()
+		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		opts = append(opts, elasticsearch.WithTransportOptions(elastictransport.WithTransport(tr)))
 	}
 
 	// Client need either username and password or an API key
