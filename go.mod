@@ -119,7 +119,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.10.3 // indirect
 	github.com/VictoriaMetrics/easyproto v0.1.4 // indirect
 	github.com/ajg/form v1.5.1 // indirect
-	github.com/andybalholm/brotli v1.2.6 // indirect
+	github.com/andybalholm/brotli v1.2.7 // indirect
 	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/apache/arrow-go/v18 v18.4.0 // indirect
 	github.com/apache/arrow/go/v15 v15.0.2 // indirect
