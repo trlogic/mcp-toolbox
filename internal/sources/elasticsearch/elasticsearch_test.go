@@ -51,6 +51,29 @@ func TestParseFromYamlElasticsearch(t *testing.T) {
 				},
 			},
 		},
+		{
+			desc: "insecure skip verify",
+			in: `
+			kind: source
+			name: my-es-instance
+			type: elasticsearch
+			addresses:
+				- https://localhost:9200
+			username: elastic
+			password: secret
+			insecureSkipVerify: true
+			`,
+			want: map[string]sources.SourceConfig{
+				"my-es-instance": elasticsearch.Config{
+					Name:               "my-es-instance",
+					Type:               elasticsearch.SourceType,
+					Addresses:          []string{"https://localhost:9200"},
+					Username:           "elastic",
+					Password:           "secret",
+					InsecureSkipVerify: true,
+				},
+			},
+		},
 	}
 	for _, tc := range tcs {
 		t.Run(tc.desc, func(t *testing.T) {
